@@ -32,7 +32,7 @@ public class ValidAop {
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
 
-        Object[] args = proceedingJoinPoint.getArgs();
+        Object[] args = proceedingJoinPoint.getArgs(); // 매개변수들 signupReqDto, bindingResult
 
         BeanPropertyBindingResult bindingResult = null;
 

@@ -17,6 +17,7 @@ PrincipalUser implements UserDetails {
     private String username;
     private String name;
     private String email;
+    // private Collection<? extends GrantedAuthority> authorities; 도 가능
     private List<SimpleGrantedAuthority> authorities;
 
     @Override
