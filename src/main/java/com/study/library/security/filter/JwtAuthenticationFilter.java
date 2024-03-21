@@ -3,6 +3,7 @@ package com.study.library.security.filter;
 import com.study.library.config.SecurityConfig;
 import com.study.library.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -30,16 +31,18 @@ public class JwtAuthenticationFilter extends GenericFilter {
         if(!isPermitAll) {
             String accessToken = request.getHeader("Authorization");
             String removedBearerToken = jwtProvider.removeBearer(accessToken); // bear 가 없는 클린한 토큰값
-            Claims claims = jwtProvider.getClaims(removedBearerToken); // 유효성 검사: 토큰이 위조되었는지 기간이 다되었는지
-                                                                       // 검사 실패 = null
+            Claims claims = null;
 
-            if(claims == null) {
+            try{
+                claims = jwtProvider.getClaims(removedBearerToken); // 유효성 검사: 토큰이 위조되었는지 기간이 다되었는지
+            } catch (Exception e) {
                 response.sendError(HttpStatus.UNAUTHORIZED.value()); // 인증실패 HttpStatus.UNAUTHORIZED.value() or 401
                 return;
             }
 
             // 토큰은 유효한데 DB에 자료가 없을경우
             Authentication authentication = jwtProvider.getAuthentication(claims);
+
             if(authentication == null) {
                 response.sendError(HttpStatus.UNAUTHORIZED.value()); // 인증실패 HttpStatus.UNAUTHORIZED.value() or 401
                 return;

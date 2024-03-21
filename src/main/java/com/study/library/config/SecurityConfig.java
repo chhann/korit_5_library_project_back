@@ -3,6 +3,8 @@ package com.study.library.config;
 import com.study.library.security.exception.AuthEntryPoint;
 import com.study.library.security.filter.JwtAuthenticationFilter;
 import com.study.library.security.filter.PermitAllFilter;
+import com.study.library.security.filter.handler.OAuth2SuccessHandler;
+import com.study.library.service.OAuth2PrincipalUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private AuthEntryPoint authEntryPoint;
+    @Autowired
+    private OAuth2PrincipalUserService oAuth2PrincipalUserService;
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -47,7 +54,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(permitAllFilter, LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()                           // 에러 발생했을때 출력되게 하기
-                .authenticationEntryPoint(authEntryPoint);     // 에러 발생했을때 출력되게 하기 매개변수에 엔트리 포인트 넣기
+                .authenticationEntryPoint(authEntryPoint)   // 에러 발생했을때 출력되게 하기 매개변수에 엔트리 포인트 넣기
+                .and()
+                .oauth2Login()  // 1
+                .successHandler(oAuth2SuccessHandler) // 4
+
+                .userInfoEndpoint()  // 2
+                // Oauth2로그인 토큰검사
+
+                .userService(oAuth2PrincipalUserService);  // 3
     }
 
 
