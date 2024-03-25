@@ -48,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll() // 이 위에 요청들은 다 인증 필요없음 (허용 해줘라)
                 .antMatchers("/mail/authenticate")
                 .permitAll()
+                .antMatchers("/admin/**")
+                .hasRole("ADMIN")
                 .anyRequest()
                 .authenticated() // 오류가 나면 여기서 응답이 일어난다
                 .and()

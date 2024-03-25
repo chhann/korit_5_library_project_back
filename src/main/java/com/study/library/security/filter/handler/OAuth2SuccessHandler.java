@@ -3,7 +3,6 @@ package com.study.library.security.filter.handler;
 import com.study.library.entity.User;
 import com.study.library.jwt.JwtProvider;
 import com.study.library.repository.UserMapper;
-import com.study.library.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
