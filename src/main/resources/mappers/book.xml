@@ -10,14 +10,12 @@
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
     </resultMap>
-
     <resultMap id="CategoryResultMap" type="com.study.library.entity.Category">
         <id property="categoryId" column="category_id"/>
         <result property="categoryName" column="category_name"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
     </resultMap>
-
     <resultMap id="BookResultMap" type="com.study.library.entity.Book">
         <id property="bookId" column="book_id"/>
         <result property="bookName" column="book_name"/>
@@ -29,8 +27,8 @@
         <result property="coverImgUrl" column="cover_img_url"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
-        <association property="bookType" resultMap="BookTypeResultMap"/>
-        <association property="category" resultMap="CategoryResultMap"/>
+        <association property="bookType" resultMap="BookTypeResultMap" />
+        <association property="category" resultMap="CategoryResultMap" />
     </resultMap>
 
     <insert id="saveBook" parameterType="com.study.library.entity.Book">
@@ -69,74 +67,101 @@
             left outer join category_tb ct on(ct.category_id = bt.category_id)
         where
             1 = 1
-            <if test="bookTypeId != 0">
-                and bt.book_type_id = #{bookTypeId}
-            </if>
-            <if test="categoryId != 0">
-                and bt.category_id = #{categoryId}
-            </if>
-            <choose>
-                <when test="searchTypeId == 0">
-                    and (
-                        bt.book_name like concat('%', #{searchText}, '%')
-                        or bt.author_name like concat('%', #{searchText}, '%')
-                        or bt.publisher_name like concat('%', #{searchText}, '%')
-                        or bt.isbn like concat('%', #{searchText}, '%')
-                    )
-                </when>
-                <when test="searchTypeId == 1">
-                    and bt.book_name like concat('%', #{searchText}, '%')
-                </when>
-                <when test="searchTypeId == 2">
-                    and bt.author_name like concat('%', #{searchText}, '%')
-                </when>
-                <when test="searchTypeId == 3">
-                    and bt.publisher_name like concat('%', #{searchText}, '%')
-                </when>
-                <when test="searchTypeId == 4">
-                    and bt.isbn like concat('%', #{searchText}, '%')
-                </when>
-            </choose>
+        <if test="bookTypeId != 0">
+            and bt.book_type_id = #{bookTypeId}
+        </if>
+        <if test="categoryId != 0">
+            and bt.category_id = #{categoryId}
+        </if>
+        <choose>
+            <when test="searchTypeId == 0">
+                and (
+                    bt.book_name like concat('%', #{searchText}, '%')
+                    or bt.author_name like concat('%', #{searchText}, '%')
+                    or bt.publisher_name like concat('%', #{searchText}, '%')
+                    or bt.isbn like concat('%', #{searchText}, '%')
+                )
+            </when>
+            <when test="searchTypeId == 1">
+                and bt.book_name like concat('%', #{searchText}, '%')
+            </when>
+            <when test="searchTypeId == 2">
+                and bt.author_name like concat('%', #{searchText}, '%')
+            </when>
+            <when test="searchTypeId == 3">
+                and bt.publisher_name like concat('%', #{searchText}, '%')
+            </when>
+            <when test="searchTypeId == 4">
+                and bt.isbn like concat('%', #{searchText}, '%')
+            </when>
+        </choose>
         limit #{startIndex}, #{count}
     </select>
 
     <select id="getBookCount" resultType="integer">
         select
             count(*)
-        from
+            from
             book_tb bt
             left outer join book_type_tb btt on(btt.book_type_id = bt.book_type_id)
             left outer join category_tb ct on(ct.category_id = bt.category_id)
         where
             1 = 1
-            <if test="bookTypeId != 0">
-                and bt.book_type_id = #{bookTypeId}
-            </if>
-            <if test="categoryId != 0">
-                and bt.category_id = #{categoryId}
-            </if>
-            <choose>
-                <when test="searchTypeId == 0">
-                    and (
+        <if test="bookTypeId != 0">
+            and bt.book_type_id = #{bookTypeId}
+        </if>
+        <if test="categoryId != 0">
+            and bt.category_id = #{categoryId}
+        </if>
+        <choose>
+            <when test="searchTypeId == 0">
+                and (
                     bt.book_name like concat('%', #{searchText}, '%')
                     or bt.author_name like concat('%', #{searchText}, '%')
                     or bt.publisher_name like concat('%', #{searchText}, '%')
                     or bt.isbn like concat('%', #{searchText}, '%')
-                    )
-                </when>
-                <when test="searchTypeId == 1">
-                    and bt.book_name like concat('%', #{searchText}, '%')
-                </when>
-                <when test="searchTypeId == 2">
-                    and bt.author_name like concat('%', #{searchText}, '%')
-                </when>
-                <when test="searchTypeId == 3">
-                    and bt.publisher_name like concat('%', #{searchText}, '%')
-                </when>
-                <when test="searchTypeId == 4">
-                    and bt.isbn like concat('%', #{searchText}, '%')
-                </when>
-            </choose>
+                )
+            </when>
+            <when test="searchTypeId == 1">
+                and bt.book_name like concat('%', #{searchText}, '%')
+            </when>
+            <when test="searchTypeId == 2">
+                and bt.author_name like concat('%', #{searchText}, '%')
+            </when>
+            <when test="searchTypeId == 3">
+                and bt.publisher_name like concat('%', #{searchText}, '%')
+            </when>
+            <when test="searchTypeId == 4">
+                and bt.isbn like concat('%', #{searchText}, '%')
+            </when>
+        </choose>
     </select>
 
+    <delete id="deleteBooksByBookIds" parameterType="list">
+        delete
+            from
+            book_tb
+        where
+            book_id in (
+                <foreach collection="bookIds" item="bookId" separator=",">
+                    #{bookId}
+                </foreach>
+            )
+    </delete>
+
+    <update id="updateBookByBookId" parameterType="com.study.library.entity.Book">
+        update
+            book_tb
+            set
+            book_name = #{bookName},
+            author_name = #{authorName},
+            publisher_name = #{publisherName},
+            isbn = #{isbn},
+            book_type_id = #{bookTypeId},
+            category_id = #{categoryId},
+            cover_img_url = #{coverImgUrl},
+            update_date = now()
+        where
+            book_id = #{bookId}
+    </update>
 </mapper>
