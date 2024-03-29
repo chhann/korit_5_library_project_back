@@ -40,6 +40,7 @@ public class OAuth2PrincipalUserService implements OAuth2UserService {
         }
         newAttributes = Map.of("id", id, "provider", provider);
 
+        // DefaultOAuth2User -> 정상적이게 성생이되면 successhandler 로 보냄
         return new DefaultOAuth2User(oAuth2User.getAuthorities(), newAttributes, "id");
     }
 

@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .userInfoEndpoint()  // 2
                 // Oauth2로그인 토큰검사
+                // 토큰으로 user정보 가져옴
 
                 .userService(oAuth2PrincipalUserService);  // 3
     }

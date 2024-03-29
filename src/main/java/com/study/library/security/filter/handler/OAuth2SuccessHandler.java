@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
+public class    OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     @Value("${client.deploy-address}")
     private String clientAddress;
 
@@ -30,10 +30,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String name = authentication.getName();
         User user = userMapper.findUserByOAuth2name(name);
 
-
-
         // OAuth2 로그인을 통해 회원가입이 되어있지 않은 상태
-
         // OAuth2 동기화
         if(user == null) {
             DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();

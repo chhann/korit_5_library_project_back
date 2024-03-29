@@ -27,6 +27,7 @@ server:
 
 
 ---
+#registration:    원래 아이디 비번들어와야한다
 
 spring:
   config:

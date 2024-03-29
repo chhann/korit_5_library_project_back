@@ -23,7 +23,6 @@ public class PermitAllFilter extends GenericFilter {
                 "/auth",
                 "/oauth2",
                 "/mail/authenticate"
-
         );
 
 
